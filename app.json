@@ -1,0 +1,7 @@
+{
+  "name": "stirlitz",
+  "description": "bitbucket <-> codeship.io middlema",
+  "repository": "https://github.com/LuckyThirteen/stirlitz",
+  "logo": "https://raw.githubusercontent.com/LuckyThirteen/stirlitz/master/misc/logo.jpg",
+  "keywords": ["codeship.io", "bitbucket"]
+}
