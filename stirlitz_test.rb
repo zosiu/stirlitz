@@ -1,5 +1,5 @@
 require 'cuba/test'
-require './hello_world'
+require './stirlitz'
 
 scope do
   test 'Homepage' do

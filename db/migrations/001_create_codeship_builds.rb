@@ -1,8 +1,7 @@
 Sequel.migration do
   change do
-    create_table(:builds) do
+    create_table(:codeship_builds) do
       primary_key :id
-      String :ci_server, default: 'codeship.io'
       String :build_url
       String :commit_url
       Integer :project_id
@@ -11,9 +10,11 @@ Sequel.migration do
       String :project_full_name
       String :commit_id
       String :short_commit_id
-      String :message
+      String :message, text: true
       String :committer
       String :branch
+      DateTime :created_at
+      DateTime :updated_at
     end
   end
 end

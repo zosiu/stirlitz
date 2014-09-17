@@ -1,3 +1,3 @@
-require './hello_world'
+require './stirlitz'
 
 run Cuba
