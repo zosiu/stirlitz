@@ -4,15 +4,18 @@ require 'send_file'
 Cuba.use Rack::Session::Cookie, secret: '__a_very_long_string__'
 # Cuba.use Rack::Protection
 Cuba.plugin(SendFile)
+Cuba.plugin(Cuba::Render)
+
+Cuba.settings[:render][:template_engine] = 'haml'
 
 Cuba.define do
   on get do
-    on 'hello' do
-      res.write (DB[:codeship_builds].all + DB[:bitbucket_pull_requests].all).map(&:inspect).join('<br/><br/>')
+    on 'ohai' do
+      res.write partial('readme')
     end
 
     on root do
-      res.redirect '/hello'
+      res.redirect '/ohai'
     end
 
     # codeship generates the badges nicely, but the url is based on the project_uuid,
