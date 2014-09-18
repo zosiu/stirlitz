@@ -1,15 +1,4 @@
-require 'dotenv'
-Dotenv.load
-
-require 'sequel'
-DB = Sequel.connect(ENV['DATABASE_URL'])
-
-require 'cuba'
-require 'json'
-
-require './codeship_build'
-require './bitbucket_pull_request'
-# require 'rack/protection'
+require './environment'
 
 Cuba.use Rack::Session::Cookie, secret: '__a_very_long_string__'
 # Cuba.use Rack::Protection

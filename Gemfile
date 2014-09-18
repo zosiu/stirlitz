@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'rake', '~> 10.3.2'
-gem 'cuba', '~> 3.3.0'
+gem 'rake',   '~> 10.3.2'
+gem 'cuba',   '~> 3.3.0'
 gem 'sequel', '~> 4.14.0'
+gem 'curb',   '~> 0.8.6'
 
 gem 'dotenv', '~> 0.11.1'
 

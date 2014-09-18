@@ -20,6 +20,8 @@
 #  updated_at           :datetime
 #
 
+require 'curb'
+
 class BitbucketPullRequest < Sequel::Model
 
   plugin :validation_helpers
@@ -33,6 +35,24 @@ class BitbucketPullRequest < Sequel::Model
                         :source_commit_hash, :repository_name,
                         :repository_full_name, :repository_link]
     validates_unique :pr_id
+  end
+
+  def approve!
+    ar = Curl::Easy.http_post(approve_link){ |c| set_bitbucket_basic_auth(c) }
+    ar.response_code == 200
+  end
+
+  def unapprove!
+    ur = Curl::Easy.http_delete(approve_link){ |c| set_bitbucket_basic_auth(c) }
+    ur.response_code == 200
+  end
+
+  private
+
+  def set_bitbucket_basic_auth(c)
+    c.http_auth_types = :basic
+    c.username = ENV['BITBUCKET_USERNAME']
+    c.password = ENV['BITBUCKET_PASSWORD']
   end
 
 end

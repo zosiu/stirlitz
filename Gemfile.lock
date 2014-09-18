@@ -3,6 +3,7 @@ GEM
   specs:
     cuba (3.3.0)
       rack
+    curb (0.8.6)
     cutest (1.2.1)
     dotenv (0.11.1)
       dotenv-deployment (~> 0.0.2)
@@ -20,6 +21,7 @@ PLATFORMS
 
 DEPENDENCIES
   cuba (~> 3.3.0)
+  curb (~> 0.8.6)
   cutest
   dotenv (~> 0.11.1)
   pg
