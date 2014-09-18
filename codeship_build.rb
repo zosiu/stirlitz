@@ -4,6 +4,7 @@
 #
 #  id                 :integer
 #  build_url          :string
+#  badge_url          :string
 #  commit_url         :string
 #  project_id         :integer
 #  build_id           :integer
@@ -14,6 +15,7 @@
 #  message            :text
 #  committer          :string
 #  branch             :string
+#  badge_comment_sent :boolean
 #  created_at         :datetime
 #  updated_at         :datetime
 #
@@ -38,15 +40,42 @@ class CodeshipBuild < Sequel::Model
 
   def validate
     super
-    validates_presence [:build_url, :commit_url, :project_id,
+    validates_presence [:build_url, :badge_url, :commit_url, :project_id,
                         :build_id, :status, :project_full_name, :commit_id,
                         :short_commit_id, :message, :committer, :branch]
     validates_unique :build_id
     validates_includes self.class::STATUSES, :status
   end
 
+  def status_badge_markdown
+    "[![Codeship build for #{project_full_name}](#{badge_url})](#{build_url})"
+  end
+
+  def badge_status
+    case status
+    when 'success', 'error' then status
+    when 'testing', 'stopped', 'waiting' then 'testing'
+    end
+  end
+
   def after_save
     super
+
+    handle_pull_request_approval!
+    send_badge_comment_if_needed!
+  end
+
+  private
+
+  def send_badge_comment_if_needed!
+    return if badge_comment_sent || bitbucket_pull_request.nil?
+
+    if bitbucket_pull_request.send_comment!(status_badge_markdown)
+      update(badge_comment_sent: true)
+    end
+  end
+
+  def handle_pull_request_approval!
     return if bitbucket_pull_request.nil?
 
     case status

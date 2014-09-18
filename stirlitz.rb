@@ -1,7 +1,9 @@
 require './environment'
+require 'send_file'
 
 Cuba.use Rack::Session::Cookie, secret: '__a_very_long_string__'
 # Cuba.use Rack::Protection
+Cuba.plugin(SendFile)
 
 Cuba.define do
   on get do
@@ -12,13 +14,34 @@ Cuba.define do
     on root do
       res.redirect '/hello'
     end
+
+    # codeship generates the badges nicely, but the url is based on the project_uuid,
+    # and that's currently isn't exposed by their API
+    # things would be much easier if the codeship webhook contained the badge url too...
+    on 'badge/:build_id' do |build_id|
+      res['Date'] = DateTime.now.to_time.utc.rfc2822.sub( /.....$/, 'GMT')
+      res['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
+      res['Pragma'] = 'no-cache'
+      res['Cache-Control'] = 'no-cache, must-revalidate'
+
+      build = CodeshipBuild[build_id: build_id]
+      if build.nil?
+        res.status = 404
+      else
+        send_file File.join('misc', 'badges', "status_#{build.badge_status}.png")
+      end
+    end
+
   end
 
   on post do
     on 'codeship' do
       build_attrs = JSON.parse(req.body.read)['build']
+      build_id = build_attrs['build_id']
+      build_attrs['badge_url'] = "#{req.env['rack.url_scheme']}://#{req.env['HTTP_HOST']}/badge/#{build_id}"
+
       begin
-        CodeshipBuild.update_or_create({build_id: build_attrs['build_id']}, build_attrs)
+        CodeshipBuild.update_or_create({build_id: build_id}, build_attrs)
 
         res.status = 200
       rescue Sequel::Error => e
