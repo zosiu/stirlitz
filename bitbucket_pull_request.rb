@@ -38,18 +38,32 @@ class BitbucketPullRequest < Sequel::Model
   end
 
   def approve!
-    ar = Curl::Easy.http_post(approve_link){ |c| set_bitbucket_basic_auth(c) }
+    ar = Curl::Easy.http_post(approve_link){ |c| set_basic_auth(c) }
     ar.response_code == 200
   end
 
   def unapprove!
-    ur = Curl::Easy.http_delete(approve_link){ |c| set_bitbucket_basic_auth(c) }
+    ur = Curl::Easy.http_delete(approve_link){ |c| set_basic_auth(c) }
     ur.response_code == 200
+  end
+
+  def send_comment!(comment)
+    content = Curl::PostField.content('content', comment)
+    cr = Curl::Easy.http_post(comments_link, content){ |c| set_basic_auth(c) }
+    cr.response_code == 200
   end
 
   private
 
-  def set_bitbucket_basic_auth(c)
+  def comments_link
+    "#{self_v1_link}/comments"
+  end
+
+  def self_v1_link
+    self_link.sub(/\/api\/2\.0\//, '/api/1.0/')
+  end
+
+  def set_basic_auth(c)
     c.http_auth_types = :basic
     c.username = ENV['BITBUCKET_USERNAME']
     c.password = ENV['BITBUCKET_PASSWORD']
