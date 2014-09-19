@@ -53,7 +53,29 @@ class BitbucketPullRequest < Sequel::Model
     cr.response_code == 200
   end
 
+  def get_last_commit_sha
+    cc = Curl::Easy.http_get(commits_link){ |c| set_basic_auth(c) }
+    return unless cc.response_code == 200
+
+    # TODO error handling would be nice
+    JSON.parse(cc.body)['values'].map{|c| c['hash']}.first
+  end
+
+  def update_last_commit_sha!
+    update(last_commit_sha: get_last_commit_sha)
+  end
+
+  def before_create
+    super
+
+    self.last_commit_sha ||= get_last_commit_sha
+  end
+
   private
+
+  def commits_link
+    "#{self_link}/commits"
+  end
 
   def comments_link
     "#{self_v1_link}/comments"

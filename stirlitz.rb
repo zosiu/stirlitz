@@ -54,7 +54,20 @@ Cuba.define do
     end
 
     on 'bitbucket' do
-      pr = JSON.parse(req.body.read)['pullrequest_created']
+      # unfortunately pullrequest_updated doesn't contain the pr_id... :(((
+      # https://bitbucket.org/site/master/issue/8340/pull-request-post-hook-does-not-include
+      payload = JSON.parse(req.body.read)
+      pr = payload['pullrequest_created']
+
+      pr_updated = payload['pullrequest_updated']
+
+      # hack | ugly & time-consuming...
+      if pr_updated
+        repo_name = pr_updated['source']['repository']['full_name']
+        # branch_name = pr_updated['source']['branch']['name']
+
+        BitbucketPullRequest.where(repository_full_name: repo_name).each(&:update_last_commit_sha!)
+      end
 
       if pr.nil?
         res.status = 200

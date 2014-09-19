@@ -31,11 +31,8 @@ class CodeshipBuild < Sequel::Model
   STATUSES = ['testing', 'error', 'success', 'stopped', 'waiting']
 
   def bitbucket_pull_request
-    BitbucketPullRequest.first source_commit_hash: bitbucket_commit_hash
-  end
-
-  def bitbucket_commit_hash
-    commit_id[0...12]
+    BitbucketPullRequest.first repository_full_name: project_full_name,
+                               last_commit_sha: commit_id
   end
 
   def validate
@@ -65,6 +62,12 @@ class CodeshipBuild < Sequel::Model
     send_badge_comment_if_needed!
   end
 
+  def before_save
+    super
+
+    update_pull_request!
+  end
+
   private
 
   def send_badge_comment_if_needed!
@@ -84,6 +87,12 @@ class CodeshipBuild < Sequel::Model
     else
       bitbucket_pull_request.unapprove!
     end
+  end
+
+  def update_pull_request!
+    return if bitbucket_pull_request.nil?
+
+    bitbucket_pull_request.update_last_commit_sha!
   end
 
 end
