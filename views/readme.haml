@@ -1,0 +1,85 @@
+!!!
+/[if IE 8 ] <html id="ie8" lang="en-US">
+/ [if (gt IE 9)|!(IE)]><!
+%html
+  / <![endif]
+  %head
+    %meta{charset: "UTF-8"}
+      %meta{content: "width=device-width", name: 'viewport'}
+        %title Stirlitz | Bitbucket <-> Codeship middleman
+        %link{href: 'http://maxcdn.bootstrapcdn.com/bootswatch/3.2.0/superhero/bootstrap.min.css', media: 'all', rel: 'stylesheet', type: 'text/css'}/
+  %body
+    .container
+      .jumbotron{style: 'position: relative;'}
+        %a{href: 'https://github.com/LuckyThirteen/stirlitz'}
+          %img{alt: 'Fork me on GitHub', 'data-canonical-src' => 'https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png', src: 'https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67', style: 'position: absolute; top: 0; right: 0; border: 0;'}/
+        %h1 Stirlitz
+        %p Bitbucket <-> Codeship middleman
+        %p.small approves / unapproves Bitbucket pull requests based on the corresponding Codeship build status
+        %p.small sends comments to the Bitbucket pull request with the correspondig Codeship build badges
+
+      .col-lg-4
+        .panel.panel-info
+          .panel-heading
+            %h3.panel-title Bitbucket setup
+          .panel-body
+            %ul.list-group
+              %li.list-group-item
+                %h4.list-group-item-heading find_or_create your approver_user
+              %li.list-group-item
+                %h4.list-group-item-heading give him write access to the repo
+              %li.list-group-item
+                %h4.list-group-item-heading
+                  = precede 'add a ' do
+                    %span.label.label-info Pull Request POST hook
+                %p.list-group-item-text
+                  %ul.list-group
+                    %li.list-group-item
+                      = precede 'URL: ' do
+                        %span.label.label-info= "#{req.env['rack.url_scheme']}://#{req.env['HTTP_HOST']}/bitbucket"
+
+      .col-lg-4
+        .panel.panel-success
+          .panel-heading
+            %h3.panel-title Codeship setup
+          .panel-body
+            %ul.list-group
+              %li.list-group-item
+                %h4.list-group-item-heading
+                  = precede 'add a ' do
+                    %span.label.label-info Webhookk
+                %p.list-group-item-text
+                  %ul.list-group
+                    %li.list-group-item
+                      = precede 'URL: ' do
+                        %span.label.label-info= "#{req.env['rack.url_scheme']}://#{req.env['HTTP_HOST']}/codeship"
+
+      .col-lg-4
+        .panel.panel-danger
+          .panel-heading
+            %h3.panel-title Stirlitz setup
+          .panel-body
+            %ul.list-group
+              %li.list-group-item
+                %h4.list-group-item-heading Set ENV variables
+                %p.list-group-item-text
+                  %ul.list-group
+                    %li.list-group-item
+                      = precede 'approver_user bitbucket username as ' do
+                        %span.label.label-info ENV[BITBUCKET_USERNAME]
+                    %li.list-group-item
+                      = precede 'approver_user bitbucket password as ' do
+                        %span.label.label-info ENV[BITBUCKET_PASSWORD]
+
+                    %li.list-group-item
+                      - unless ENV['BITBUCKET_USERNAME'].nil?
+                        .alert.alert-dismissable.alert-success
+                          .small
+                            = succeed ' ✓' do
+                              ENV[BITBUCKET_USERNAME]
+
+                      - unless ENV['BITBUCKET_PASSWORD'].nil?
+                        .alert.alert-dismissable.alert-success
+                          .small
+                            = succeed ' ✓' do
+                              ENV[BITBUCKET_PASSWORD]

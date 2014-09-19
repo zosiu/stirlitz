@@ -1,0 +1,10 @@
+{
+  "name": "stirlitz",
+  "description": "bitbucket <-> codeship.io middleman",
+  "repository": "https://github.com/LuckyThirteen/stirlitz",
+  "logo": "https://raw.githubusercontent.com/LuckyThirteen/stirlitz/master/misc/logo.jpg",
+  "keywords": ["codeship.io", "bitbucket"],
+  "scripts": {
+    "postdeploy": "bundle exec rake db:migrate"
+  }
+}

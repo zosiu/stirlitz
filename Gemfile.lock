@@ -1,0 +1,37 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    cuba (3.3.0)
+      rack
+    curb (0.8.6)
+    cutest (1.2.1)
+    dotenv (0.11.1)
+      dotenv-deployment (~> 0.0.2)
+    dotenv-deployment (0.0.2)
+    haml (4.0.5)
+      tilt
+    pg (0.17.1)
+    rack (1.5.2)
+    rack-test (0.6.2)
+      rack (>= 1.0)
+    rake (10.3.2)
+    send_file (1.0.1)
+    sequel (4.14.0)
+    sqlite3 (1.3.9)
+    tilt (2.0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  cuba (~> 3.3.0)
+  curb (~> 0.8.6)
+  cutest
+  dotenv (~> 0.11.1)
+  haml (~> 4.0.5)
+  pg
+  rack-test
+  rake (~> 10.3.2)
+  send_file (~> 1.0.1)
+  sequel (~> 4.14.0)
+  sqlite3
