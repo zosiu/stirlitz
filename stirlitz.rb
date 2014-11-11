@@ -90,7 +90,8 @@ Cuba.define do
         }
 
         begin
-          pr = BitbucketPullRequest.update_or_create({pr_id: pr_attrs['pr_id']}, pr_attrs)
+          pr = BitbucketPullRequest.update_or_create({pr_id: pr_attrs[:pr_id],
+                                                      repository_full_name: pr_attrs[:repository_full_name]}, pr_attrs)
 
           if pr.valid?
             res.status = 200
