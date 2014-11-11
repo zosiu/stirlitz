@@ -98,7 +98,6 @@ Cuba.define do
             res.status = 500
             res.write({ error: res.errors }.to_json)
           end
-
         rescue Sequel::Error => e
           res.status = 500
           res.write({ error: e.message }.to_json)
