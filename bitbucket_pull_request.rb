@@ -34,7 +34,7 @@ class BitbucketPullRequest < Sequel::Model
                         :decline_link, :state, :pr_id, :source_commit_link,
                         :source_commit_hash, :repository_name,
                         :repository_full_name, :repository_link]
-    validates_unique :pr_id
+    validates_unique [:pr_id, :repository_full_name]
   end
 
   def approve!
