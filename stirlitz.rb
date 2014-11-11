@@ -70,7 +70,8 @@ Cuba.define do
       end
 
       if pr.nil?
-        res.status = 200
+        res.status = 202
+        res.write({ payload_was: payload }.to_json)
       else
         pr_attrs = {
           description: pr['description'],
@@ -89,9 +90,15 @@ Cuba.define do
         }
 
         begin
-          BitbucketPullRequest.update_or_create({pr_id: pr_attrs['pr_id']}, pr_attrs)
+          pr = BitbucketPullRequest.update_or_create({pr_id: pr_attrs['pr_id']}, pr_attrs)
 
-          res.status = 200
+          if pr.valid?
+            res.status = 200
+          else
+            res.status = 500
+            res.write({ error: res.errors }.to_json)
+          end
+
         rescue Sequel::Error => e
           res.status = 500
           res.write({ error: e.message }.to_json)
