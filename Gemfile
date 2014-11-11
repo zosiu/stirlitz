@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rake',       '~> 10.3.2'
 gem 'cuba',       '~> 3.3.0'
-gem 'send_file',  '~> 1.0.1'
 gem 'sequel',     '~> 4.14.0'
 gem 'curb',       '~> 0.8.6'
 gem 'haml',       '~> 4.0.5'

@@ -1,9 +1,5 @@
 require './environment'
-require 'send_file'
 
-Cuba.use Rack::Session::Cookie, secret: '__a_very_long_string__'
-# Cuba.use Rack::Protection
-Cuba.plugin(SendFile)
 Cuba.plugin(Cuba::Render)
 
 Cuba.settings[:render][:template_engine] = 'haml'
@@ -25,13 +21,15 @@ Cuba.define do
       res['Date'] = DateTime.now.to_time.utc.rfc2822.sub( /.....$/, 'GMT')
       res['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
       res['Pragma'] = 'no-cache'
-      res['Cache-Control'] = 'no-cache, must-revalidate'
+      res['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+      res.headers['Content-Type']  = 'image/png'
 
       build = CodeshipBuild[build_id: build_id]
+
       if build.nil?
         res.status = 404
       else
-        send_file File.join('misc', 'badges', "status_#{build.badge_status}.png")
+        res.write File.open(File.join('misc', 'badges', "status_#{build.badge_status}.png")).read
       end
     end
 
